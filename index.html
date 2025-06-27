@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Malta Libraries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: "Lato", sans-serif;
+      margin: 0;
+    }
+
+    /* HEADER STYLES */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 24vh; /* increased from 20vh */
+      background-color: #CA4B2E;
+      color: white;
+      z-index: 2000;
+      transition: top 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      padding: 18px 32px;
+      flex-grow: 1;
+      justify-content: center;
+      position: relative;
+      gap: 16px;
+      flex-wrap: nowrap;
+    }
+
+    /* Menu button on the left */
+    .openbtn {
+      position: absolute;
+      left: 32px;
+      font-size: 26px;
+      padding: 14px 22px;
+      background-color: #CA4B2E;
+      color: white;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .openbtn:hover {
+      background-color: #b24327;
+    }
+
+    /* Logo centered naturally */
+    .logo img {
+      height: 90px;
+      width: auto;
+      max-width: 100%;
+    }
+
+    /* Account on the right */
+    .account {
+      position: absolute;
+      right: 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .account a {
+      display: flex;
+      align-items: center;
+      color: white;
+      text-decoration: none;
+    }
+
+    .account a:hover {
+      color: #b24327;
+    }
+
+    .account img {
+      height: 32px;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    .account span {
+      color: white;
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 8px; /* added padding */
+    }
+
+    .header-hr {
+      width: 100%;
+      height: 4px;
+      background-color: white;
+      border: none;
+      margin: 0 0 6px 0;
+    }
+
+    /* VIDEO SECTION */
+    .hero-video {
+      width: 100%;
+      overflow: hidden;
+      margin-top: 24vh; /* adjusted to match header height */
+    }
+
+    .hero-video video {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* SIDEBAR STYLES */
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 2000;
+      top: 0;
+      left: 0;
+      background-color: #CA4B2E;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+
+    .sidebar a {
+      padding: 8px 32px;
+      text-decoration: none;
+      font-size: 22px;
+      color: white;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #1B5061;
+    }
+
+    .sidebar .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+    }
+
+    .sidebar hr {
+      height: 2px;
+      border: none;
+      background-color: white;
+      margin: 10px 0;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      transition: margin-left 0.5s;
+      padding: 20px;
+    }
+
+    .header.hidden {
+      top: -24vh; /* adjusted for taller header */
+    }
+
+
+    /* Carousel */
+    .carousel-container::before,
+.carousel-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 5;
+  pointer-events: none;
+}
+.carousel-container::before {
+  left: 0;
+  background: linear-gradient(to right, #fff, transparent);
+}
+.carousel-container::after {
+  right: 0;
+  background: linear-gradient(to left, #fff, transparent);
+}
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      margin: auto;
+      height: 150%;
+    }
+
+    .carousel-track {
+      display: flex;
+      overflow-x: scroll;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding: 60px 0;
+    }
+
+    .carousel-slide {
+      flex: 0 0 auto;
+      width: 300px;
+      margin: 0 15px;
+      scroll-snap-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 390px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-slide.active img {
+      transform: scale(1.3);
+      z-index: 2;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      padding: 10px 15px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .carousel-nav.prev {
+      left: 10px;
+    }
+
+    .carousel-nav.next {
+      right: 10px;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-track {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* LINKS CSS */
+
+        .link-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f6f6f6;
+      padding: 35px 30px;
+    }
+
+    .link-section a {
+      color: #004c66;
+      font-weight: bold;
+      font-size: 16px;
+      text-decoration: underline;
+    }
+
+    .right-link {
+      text-decoration: none !important; /* Fully remove underline */
+      border-bottom: 2px solid #cc3300; /* Red underline only */
+      padding-bottom: 2px;
+    }
+
+    /* APPS Section */
+    
+    .apps-section {
+      background-color: #bad7bf;
+      padding: 40px 20px;
+      box-sizing: border-box;
+      margin-top: 20px;
+    }
+
+    .appshero {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .appscard-image {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      border-radius: 20px;
+      display: block;
+    }
+
+    .appsbuttons {
+      margin-top: 2rem;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .appsbutton {
+      background-color: #004d66;
+      color: #fff;
+      padding: 15px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 0.9rem;
+      line-height: 1.2;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border: none;
+    }
+
+    .appsbutton.download {
+      background-color: #CA4B2E;
+      color: white;
+    }
+
+    .appsbutton.download:hover {
+      background-color: #9a3b24;
+      color: white;
+    }
+
+    .appsbutton:hover {
+      background-color: #00394d;
+    }
+
+    /* Events Section */
+    .UpcomingEvents {
+      background-color: #f8f8f8;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    .about-title {
+      font-size: 6rem;
+      font-weight: 900;
+      text-align: center;
+      margin: 60px 20px 20px;
+      background: linear-gradient(to bottom, rgba(202, 75, 46, 1), rgba(202, 75, 46, 0.2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lib-carousel-container {
+      width: 100%;
+      max-width: 100vw;
+      position: relative;
+      height: 600px;
+      margin-top: 40px;
+      perspective: 1000px;
+    }
+
+    .lib-carousel-track {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+    }
+
+    .lib-card {
+      position: absolute;
+      width: 340px;
+      height: 500px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      transition: all 0.8s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lib-card img {
+      width: 100%;
+      height: 60%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .lib-card-content {
+      padding: 20px;
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #fff;
+    }
+
+    .lib-card-content h3 {
+      font-size: 1.4rem;
+      color: #CA4B2E;
+      margin-bottom: 10px;
+    }
+
+    .lib-card-content p {
+      color: #333;
+      font-size: 1rem;
+    }
+
+    .lib-card.center {
+      z-index: 10;
+      transform: scale(1.1) translateZ(0);
+    }
+
+    .lib-card.left-2 {
+      z-index: 1;
+      transform: translateX(-500px) scale(0.8) translateZ(-300px);
+      opacity: 0.5;
+    }
+
+    .lib-card.left-1 {
+      z-index: 5;
+      transform: translateX(-250px) scale(0.9) translateZ(-100px);
+      opacity: 0.85;
+    }
+
+    .lib-card.right-1 {
+      z-index: 5;
+      transform: translateX(250px) scale(0.9) translateZ(-100px);
+      opacity: 0.85;
+    }
+
+    .lib-card.right-2 {
+      z-index: 1;
+      transform: translateX(500px) scale(0.8) translateZ(-300px);
+      opacity: 0.5;
+    }
+
+    .lib-card.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .lib-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 30px 0;
+    }
+
+    .lib-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(202, 75, 46, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .lib-dot.active {
+      background: #CA4B2E;
+      transform: scale(1.2);
+    }
+
+    .lib-nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(202, 75, 46, 0.6);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: all 0.3s ease;
+      font-size: 1.5rem;
+      border: none;
+      outline: none;
+    }
+
+    .lib-nav-arrow:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .lib-nav-arrow.left {
+      left: 20px;
+    }
+
+    .lib-nav-arrow.right {
+      right: 20px;
+    }
+
+    /* Member Section  */
+
+    .memberhero {
+      position: relative;
+      width: 100%;
+      height: 800px;
+      background: url('https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Background.png') no-repeat center center / cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0px;
+    }
+
+    /* Made the card bigger */
+    .membercard-image {
+      width: 70%;
+      max-width: 500px;
+      height: auto;
+      margin-bottom: 30px;
+    }
+
+    .memberbuttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .memberbuttondownload,
+    .memberbuttonjoin {
+      padding: 15px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      color: #fff; /* Text color changed to white */
+    }
+
+    .memberbuttondownload {
+      background-color: #b2d8c4;
+      color: #fff; /* override previous green text */
+    }
+
+    .memberbuttonjoin {
+      background-color: #004d66;
+      color: #fff;
+    }
+
+    .memberbuttondownload:hover,
+    .memberbuttonjoin:hover {
+      transform: scale(1.05);
+    }
+
+    /* Notifications Section*/
+
+    .notificationtest {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f3f3;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      min-height: 280px; /* consistent height */
+    }
+
+    .image {
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 4 / 3; /* You can adjust this ratio */
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+margin: 0px;
+}
+
+    .notification {
+      flex: 1;
+      background: linear-gradient(135deg, #CA4B2E, #f3d45e);
+      color: #fff;
+      border-radius: 12px;
+      padding: 24px 28px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 8px solid #ffffff;
+      animation: fadeInUp 0.6s ease both;
+      transition: transform 0.2s ease;
+    }
+
+    .notification:hover {
+      transform: translateY(-5px);
+    }
+
+    .notification h4 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .notification p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .row {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .membercard-image {
+        width: 90%;
+      }
+
+      .memberhero {
+        height: auto;
+        padding: 40px 20px;
+      }
+
+      .memberbuttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .memberbuttondownload,
+      .memberbuttonjoin {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    /*Services Section*/
+
+	#homeservices {
+      font-family: Arial, sans-serif;
+      background-color: #e0e0e0;
+      padding: 40px;
+    }
+
+    .servicesgrid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 100%;
+      margin: auto;
+    }
+
+    .servicescard {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .servicescard img {
+      width: 100%;
+      height: 100%;
+      display: block;
+	  margin: 0;
+    }
+
+    .serviceslabel {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: #CA4B2E;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    /* NBO Section */
+    .nbo-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      margin: auto;
+      height: 150%;
+    }
+
+    .nbo-container::before,
+    .nbo-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .nbo-container::before {
+      left: 0;
+      background: linear-gradient(to right, #fff, transparent);
+    }
+
+    .nbo-container::after {
+      right: 0;
+      background: linear-gradient(to left, #fff, transparent);
+    }
+
+    .nbo-track {
+      display: flex;
+      overflow-x: scroll;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding: 60px 0;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .nbo-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nbo-slide {
+      flex: 0 0 auto;
+      width: 300px;
+      margin: 0 15px;
+      scroll-snap-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .nbo-slide img {
+      width: 100%;
+      height: 390px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .nbo-slide.active img {
+      transform: scale(1.3);
+      z-index: 2;
+    }
+
+    .nbo-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      padding: 10px 15px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .nbo-nav.prev {
+      left: 10px;
+    }
+
+    .nbo-nav.next {
+      right: 10px;
+    }
+
+    /* ContactUs Section */
+    :root {
+      --primary-color: #0a4c5f;
+      --primary-hover: #063a4b;
+      --light-bg: #f4f9f8;
+      --text-dark: #1b1f24;
+      --white: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    .ContactFormBody {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    .contact-wrapper {
+      width: 100%;
+    }
+
+    .contact-section {
+      position: relative;
+      background: url('https://www.maltalibraries.gov.mt/iguanatest/uploads/image/ContactUs.png') no-repeat center center / cover;
+      padding: 60px 5%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    .contact-section .overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.55);
+      z-index: 0;
+    }
+
+    .contact-content,
+    .contact-form {
+      position: relative;
+      z-index: 1;
+      flex: 1 1 300px;
+      max-width: 600px;
+    }
+
+    .contact-content {
+      color: var(--white);
+    }
+
+    .contact-content h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .contact-content p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-content a {
+      display: inline-block;
+      font-weight: 600;
+      color: var(--white);
+      background-color: var(--primary-color);
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .contact-content a:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .contact-form {
+      background: rgba(255, 255, 255, 0.97);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .contact-form h3 {
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      text-align: center;
+      width: 100%;
+    }
+
+    .form-field {
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-field label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      text-align: left;
+      font-size: 1rem;
+    }
+
+    .form-field input,
+    .form-field textarea {
+      padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+      background-color: #fff;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    .contact-form button {
+      max-width: 480px;
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .contact-form button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    @media (max-width: 768px) {
+      .contact-section {
+        padding: 40px 20px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .contact-content,
+      .contact-form {
+        max-width: 100%;
+      }
+
+      .form-field,
+      .contact-form button {
+        max-width: 100%;
+      }
+
+      .form-field label {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .contact-content h2 {
+        font-size: 1.5rem;
+      }
+
+      .contact-content p {
+        font-size: 0.95rem;
+      }
+
+      .contact-form h3 {
+        font-size: 1.25rem;
+      }
+    }
+
+    /* Maps Section */
+    .app-container {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f4f6; /* light grey */
+      color: #1e293b; /* dark slate */
+      min-height: 100vh;
+    }
+
+    .section-header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+      font-size: 2rem;
+      color: #b91c1c; /* dark red */
+    }
+
+    .primary-button {
+      display: block;
+      margin: 0 auto 2rem;
+      background-color: #b91c1c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      max-width: 320px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .primary-button:hover {
+      background-color: #7f1d1d;
+    }
+
+    .library-container {
+      display: flex;
+      flex-wrap: wrap;       /* allow wrapping */
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 100vw;      /* full viewport width */
+      box-sizing: border-box; /* include padding in width */
+      justify-content: center; /* center cards */
+      overflow-x: hidden;     /* hide horizontal overflow */
+    }
+
+    .library-card {
+      background-color: #1B5061;
+      color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 300px;       /* flex-grow, shrink, base width */
+      max-width: 350px;
+      min-width: 280px;
+      transition: transform 0.2s ease;
+    }
+
+    .library-card:hover {
+      transform: scale(1.015);
+    }
+
+    .map {
+      height: 250px;
+      width: 100%;
+    }
+
+    .card-content {
+      padding: 1.2rem;
+    }
+
+    .card-content a {
+      color: #dc2626;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .card-content a:hover {
+      color: #b91c1c;
+    }
+
+    .contact {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-top: 0.8rem;
+    }
+
+    .contact span {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .directions-btn {
+      display: inline-block;
+      margin-top: 10px;
+      background-color: #b91c1c;
+      color: #ffffff !important;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .directions-btn:hover {
+      background-color: #7f1d1d;
+    }
+
+    .hours-toggle-container {
+      margin-top: 1rem;
+    }
+
+    .toggle-btn {
+      background: none;
+      color: #dc2626;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .toggle-btn:hover {
+      color: #b91c1c;
+    }
+
+    .opening-hours {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .library-container {
+        flex-direction: column;
+        padding: 1rem;
+      }
+
+      .library-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+        min-width: auto;
+      }
+    }
+
+    /* Footer */
+
+
+  .footer {
+    background-color: #CA4B2E;
+    color: white;
+    padding: 20px 15px;
+    font-family: 'Trebuchet MS', Helvetica, sans-serif;
+    font-size: 12px;
+
+    
+  }
+
+  .footer hr {
+    border: none;
+    height: 2px;
+    background: white;
+    margin: 10px 0;
+  }
+
+  .footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-logo img {
+    width: 72px;
+    height: 32px;
+    display: block;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+
+  .footer-links a {
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+  }
+
+  .footer-links a:hover,
+  .footer-links a:focus {
+    border-bottom: 1px solid white;
+  }
+
+  .footer-copy {
+    text-align: center;
+    font-size: 10px;
+    margin-top: 10px;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 600px) {
+    .footer-container {
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+
+    .footer-links {
+      justify-content: center;
+    }
+  }
+
+    /* Responsive Tweaks */
+    @media screen and (max-width: 768px) {
+      .header-content {
+        padding: 12px 20px;
+      }
+
+      .openbtn {
+        font-size: 22px;
+        padding: 12px 18px;
+        left: 20px;
+      }
+
+      .logo img {
+        height: 70px;
+      }
+
+      .account {
+        font-size: 16px;
+        right: 20px;
+        gap: 6px;
+      }
+
+      .account img {
+        height: 28px;
+      }
+    }
+
+    @media screen and (max-width: 500px) {
+      .header {
+        height: 20vh; /* slightly reduced on small screens */
+      }
+
+      .hero-video {
+        margin-top: 20vh; /* match header height */
+      }
+
+      .openbtn {
+        font-size: 20px;
+        padding: 10px 16px;
+        left: 12px;
+      }
+
+      .logo img {
+        height: 60px;
+      }
+
+      .account {
+        font-size: 14px;
+        right: 12px;
+        gap: 4px;
+      }
+
+      .account img {
+        height: 24px;
+      }
+
+      /* Allow text to wrap if too long */
+      .account span {
+        white-space: normal;
+      }
+    }
+  
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-content {
+  flex: 1;
+}
+
+    /* Toggle Button Styles */
+    #themeToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #CA4B2E;
+      color: white;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 3000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+    }
+    #themeToggle:hover {
+      background-color: #b24327;
+    }
+
+    /* Dark Mode Styles */
+    .dark-mode #themeToggle{
+      background-color: #A9A9A9;
+    }
+
+    .dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    .dark-mode .header,
+    .dark-mode .sidebar,
+    .dark-mode .footer,
+    .dark-mode .carousel-container,
+    .dark-mode .link-section,
+    .dark-mode .notificationtest,
+    .dark-mode .nbo-container,
+    .dark-mode .apps-section,
+    .dark-mode .memberhero,
+    .dark-mode .notification,
+    .dark-mode .contact-form,
+    .dark-mode .servicescard,
+    .dark-mode .app-container,
+    .dark-mode .library-card {
+      background-color: #1c1a1a !important;
+      color: #ffffff !important;
+    }
+    .dark-mode a {
+      color: #ffffff !important;
+    }
+
+    .dark-mode .contact-form h3 {
+      color: #ffffff !important;
+    }
+
+    .dark-mode .UpcomingEvents{
+      background-color: #333;
+    }
+
+    .dark-mode .about-title{
+          font-size: 6rem;
+    font-weight: 900;
+    text-align: center;
+    margin: 60px 20px 20px;
+    background: linear-gradient(to bottom, white, grey);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    }
+
+    .dark-mode #homeservices{
+      background-color: #333;
+    }
+    .dark-mode .card-content {
+      background-color: #333;
+    }
+    .dark-mode .carousel-slide img,
+    .dark-mode .nbo-slide img,
+    .dark-mode .lib-card img {
+      filter: brightness(0.9);
+    }
+
+    .dark-mode .openbtn{
+      background-color: #1c1a1a;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="page-content">
+      <!-- HEADER -->
+  <div class="header" id="siteHeader">
+    <div class="header-content">
+      <button class="openbtn" onclick="openNav()" aria-label="Open sidebar menu">☰ Menu</button>
+      <div class="logo">
+        <a href="#">
+          <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/6727white.png" alt="Malta Libraries Logo" />
+        </a>
+      </div>
+      <div class="account">
+        <a href="https://www.maltalibraries.gov.mt/iguanatest/www.main.cls?surl=useractivities" aria-label="My Library Account">
+          <img
+            src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/ProfileIcon.png"
+            alt="User Profile Icon"
+          />
+          <span>My Library Account</span>
+        </a>
+      </div>
+    </div>
+    <hr class="header-hr" />
+  </div>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="mySidebar" role="navigation" aria-label="Sidebar navigation">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()" aria-label="Close sidebar">&times;</a>
+    <div class="MaltaSimpleSearch">
+      <p><searchbox searchprofile="143e4e7a-7477-4e48-9f0c-0cbdc51ce99c"></searchbox></p>
+    </div>
+    <hr /><a href="#">Home</a>
+    <hr /><a href="#">Malta Libraries</a>
+    <hr /><a href="#">Public Libraries</a>
+    <hr /><a href="#">National Library</a>
+    <hr /><a href="#">National Bibliographic Office</a>
+    <hr /><a href="#">Online Catalogues</a>
+    <hr /><a href="#">Services</a>
+    <hr /><a href="#">Contact Us</a>
+    <hr />
+    <a href="https://www.maltalibraries.gov.mt/iguanatest/www.main.cls?surl=useractivities#GuestRegistration=1">Register</a>
+    <hr />
+  </nav>
+
+  <!-- VIDEO SECTION -->
+  <section class="hero-video">
+    <video autoplay muted loop playsinline>
+      <source src="https://www.maltalibraries.gov.mt/cmstest/uploads/file/MaltaLibraries-OpenInspiration.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </section>
+
+  <!-- LINKS SECTION -->
+
+    <div class="link-section">
+    <a class="left-link">What People Are Looking At ...</a>
+    <a href="#" class="right-link">Browse Online Catalogues &gt;</a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="main">
+    <div class="carousel-container" id="carousel">
+    <button class="carousel-nav prev">&#10094;</button>
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 1"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 2"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 3"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 4"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 5"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 6"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 7"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 8"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 9"></div>
+    </div>
+    <button class="carousel-nav next">&#10095;</button>
+  </div>
+  <!-- APPS CONTENT -->
+  <section class="apps-section">
+  <div class="appshero">
+    <img
+      alt="Membership Card"
+      class="appscard-image"
+      src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Libby.jpg"
+    />
+    <div class="appsbuttons">
+      <div class="appsbutton download">📲 DOWNLOAD THE LIBBY APP</div>
+      <div class="appsbutton">📚 DOWNLOAD THE KANOPY APP</div>
+    </div>
+  </div>
+</section>
+    <!-- Events CONTENT -->
+<div class="UpcomingEvents">
+
+  <h1 class="about-title">Upcoming Events</h1>
+
+  <div class="lib-carousel-container">
+    <button class="lib-nav-arrow left" aria-label="Previous event">‹</button>
+    <div class="lib-carousel-track" id="lib-carousel-track"></div>
+    <button class="lib-nav-arrow right" aria-label="Next event">›</button>
+  </div>
+
+  <div class="lib-dots" id="lib-dot-container"></div>
+
+  <div class="dots" id="dot-container"></div>
+</div>
+
+    <!-- Member CONTENT -->
+ <div class="memberhero">
+    <img 
+      src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Card.png" 
+      alt="Membership Card" 
+      class="membercard-image"
+    />
+
+    <div class="memberbuttons">
+      <div class="memberbuttondownload">
+        📚 DOWNLOAD<br />THE MALTA LIBRARIES APP
+      </div>
+      <div class="memberbuttonjoin">
+        🧾 BECOME A<br />MALTA LIBRARIES MEMBER
+      </div>
+    </div>
+  </div>    
+
+    <!-- LINKS SECTION -->
+
+    <div class="link-section">
+    <a class="left-link">Notifications</a>
+    <a href="#" class="right-link">View All Notifications &gt;</a>
+  </div>
+
+    <!-- Notifications SECTION -->
+     <div class="notificationtest">
+<div class="container"><!-- Row 1 -->
+<div class="row">
+<div class="image"><img alt="Library Staff" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/PersonCalling.jpg" /></div>
+
+<div class="notification">
+<h4>📞 Telephone Number Update</h4>
+
+<p>The National Library&rsquo;s telephone number has changed. Please call <strong>26005100</strong> for assistance.</p>
+</div>
+</div>
+<!-- Row 2 -->
+
+<div class="row">
+<div class="image"><img alt="Children’s Section" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/ChildrenLibrary.png" /></div>
+
+<div class="notification">
+<h4>🚧 Renovation Notice</h4>
+
+<p>The library is undergoing major renovations, which may cause disruptions to the usual research process. We apologize for any inconvenience.</p>
+</div>
+</div>
+<!-- Row 3 -->
+
+<div class="row">
+<div class="image"><img alt="Archives Room" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/LibraryHall.jpg" /></div>
+
+<div class="notification">
+<h4>🚻 Facilities Update</h4>
+
+<p>Please note, the researchers&#39; restroom is temporarily unavailable.</p>
+</div>
+</div>
+</div>
+</div>
+
+    <!-- LINKS SECTION -->
+
+    <div style="background-color:#E0E0E0" class="link-section">
+    <a class="left-link">Malta Libraries Services</a>
+    <a href="#" class="right-link">View All Services &gt;</a>
+  </div>
+
+<!-- Services Section -->
+
+<div id="homeservices">
+			<div class="servicesgrid-container">
+			<div class="servicescard"><img alt="Talking Books" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/TalkingBooks.png" />
+			<div class="serviceslabel">Talking Books</div>
+			</div>
+
+			<div class="servicescard"><img alt="Second Hand Bookshop" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/2ndhand.png" />
+			<div class="serviceslabel">Second Hand Bookshop</div>
+			</div>
+
+			<div class="servicescard"><img alt="Join Malta Libraries" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/JoinMaltaLibrariesService.jpeg" />
+			<div class="serviceslabel">Join Malta Libraries</div>
+			</div>
+
+			<div class="servicescard"><img alt="Reference Library Services" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/ReferenceLibraryService.jpg" />
+			<div class="serviceslabel">Reference Library Services</div>
+			</div>
+
+			<div class="servicescard"><img alt="Free Internet Access" src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/FreeInternet.png" />
+			<div class="serviceslabel">Free internet access</div>
+			</div>
+			</div>
+			</div>
+
+        <!-- LINKS SECTION -->
+
+    <div class="link-section">
+    <a class="left-link">Examples of Digitised Material:</a>
+    <a href="#" class="right-link">National Bibliographic Office &gt;</a>
+  </div>
+
+  <!-- NBO SECTION -->
+<div class="carousel-container nbo-container" id="carouselNBO" role="region" aria-label="NBO Image Carousel">
+    <button class="carousel-nav nbo-nav prev" aria-label="Previous Slide">&#10094;</button>
+    <div class="carousel-track nbo-track" id="carouselNBOTrack">
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art1.jpg" alt="Abstract Art in Blue Tones"></div>
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art2.jpg" alt="Colorful Geometric Pattern"></div>
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art3.jpg" alt="Modern Expressionist Painting"></div>
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art1.jpg" alt="Abstract Art in Blue Tones"></div>
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art2.jpg" alt="Colorful Geometric Pattern"></div>
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art3.jpg" alt="Modern Expressionist Painting"></div>
+        <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art1.jpg" alt="Abstract Art in Blue Tones"></div>
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art2.jpg" alt="Colorful Geometric Pattern"></div>
+      <div class="carousel-slide nbo-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Art3.jpg" alt="Modern Expressionist Painting"></div>
+    </div>
+    <button class="carousel-nav nbo-nav next" aria-label="Next Slide">&#10095;</button>
+  </div>
+  <!-- ContactUs SECTION -->
+  <div class="ContactFormBody">
+
+  <div class="contact-wrapper">
+    <section class="contact-section" aria-label="Contact section">
+      <div class="overlay"></div>
+
+      <div class="contact-content">
+        <h2>We're Always Happy to Hear From You</h2>
+        <p>If you have questions, feedback, or just want to say hello, feel free to reach out using the form.</p>
+        <a href="#contact-form">Get in Touch</a>
+      </div>
+
+      <form class="contact-form" id="contact-form" aria-label="Contact form">
+        <h3>Contact Form</h3>
+
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" placeholder="Your full name" required />
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="Your email address" required />
+        </div>
+
+        <div class="form-field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
+        </div>
+
+        <button type="submit">Send Message</button>
+      </form>
+    </section>
+  </div>
+
+</div>
+
+<!-- Maps SECTION -->
+
+    <div class="app-container">
+
+    <h2 class="section-header">📚 Where To Find Us</h2>
+
+    <a href="#" class="primary-button">Public Libraries and National Library</a>
+
+    <div class="library-container">
+
+      <!-- Card 1 -->
+      <div class="library-card">
+        <div id="map1" class="map"></div>
+        <div class="card-content">
+          <a href="#">National Library of Malta</a>
+          <div class="contact">
+            <span>📍 36 Old Treasury Street, Valletta VLT 1410, Malta</span>
+            <span>☎️ +356 26005100</span>
+            <span>✉️ <a href="mailto:customercare.nlm@gov.mt">customercare.nlm@gov.mt</a></span>
+            <div class="hours-toggle-container">
+              <button class="toggle-btn" onclick="toggleHours(this)">📅 View Opening Hours</button>
+              <div class="opening-hours hidden">
+                <span>Mon–Fri: 08:15 – 17:00</span>
+                <span>Sat: 08:15 – 13:00</span>
+                <span>Sun & Public Holidays: Closed</span>
+              </div>
+            </div>
+            <a class="directions-btn" href="https://www.google.com/maps?q=36+Old+Treasury+Street,+Valletta,+Malta" target="_blank">Get Directions</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="library-card">
+        <div id="map2" class="map"></div>
+        <div class="card-content">
+          <a href="#">Central Public Library Floriana</a>
+          <div class="contact">
+            <span>📍 Prof. Joseph J. Mangion Street, Floriana, FRN 1800, Malta</span>
+            <span>☎️ +356 26005300</span>
+            <span>✉️ <a href="mailto:customercare.cpl@gov.mt">customercare.cpl@gov.mt</a></span>
+            <div class="hours-toggle-container">
+              <button class="toggle-btn" onclick="toggleHours(this)">📅 View Opening Hours</button>
+              <div class="opening-hours hidden">
+                <span>Mon–Fri: 09:00 – 17:00</span>
+                <span>Sat: 09:00 – 12:00</span>
+                <span>Sun & Public Holidays: Closed</span>
+              </div>
+            </div>
+            <a class="directions-btn" href="https://www.google.com/maps?q=Prof.+Joseph+J.+Mangion+Street,+Floriana,+Malta" target="_blank">Get Directions</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="library-card">
+        <div id="map3" class="map"></div>
+        <div class="card-content">
+          <a href="#">National Library of Gozo</a>
+          <div class="contact">
+            <span>📍 Vajrinġa Street, Valletta VLT 1313, Gozo, Malta</span>
+            <span>☎️ +356 26005200</span>
+            <span>✉️ <a href="mailto:customercare.nlm@gov.mt">customercare.nlm@gov.mt</a></span>
+            <div class="hours-toggle-container">
+              <button class="toggle-btn" onclick="toggleHours(this)">📅 View Opening Hours</button>
+              <div class="opening-hours hidden">
+                <span>Mon–Fri: 08:00 – 16:00</span>
+                <span>Sat: 08:00 – 12:00</span>
+                <span>Sun & Public Holidays: Closed</span>
+              </div>
+            </div>
+            <a class="directions-btn" href="https://www.google.com/maps?q=Vajrinġa+Street,+Gozo,+Malta" target="_blank">Get Directions</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="library-card">
+        <div id="map4" class="map"></div>
+        <div class="card-content">
+          <a href="#">Gozo Central Public Library Victoria</a>
+          <div class="contact">
+            <span>📍 St Francis Square, Victoria, VCT 1335, Gozo, Malta</span>
+            <span>☎️ +356 26005400</span>
+            <span>✉️ <a href="mailto:customercare.cpl@gov.mt">customercare.cpl@gov.mt</a></span>
+            <div class="hours-toggle-container">
+              <button class="toggle-btn" onclick="toggleHours(this)">📅 View Opening Hours</button>
+              <div class="opening-hours hidden">
+                <span>Mon–Fri: 09:00 – 17:00</span>
+                <span>Sat: 09:00 – 13:00</span>
+                <span>Sun & Public Holidays: Closed</span>
+              </div>
+            </div>
+            <a class="directions-btn" href="https://www.google.com/maps?q=St+Francis+Square,+Victoria,+Gozo,+Malta" target="_blank">Get Directions</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+    </div>
+    </div>
+    <footer class="footer" role="contentinfo">
+      <hr />
+  <div class="footer-container">
+    <div class="footer-logo">
+      <img src="https://www.maltalibraries.gov.mt//iguana/uploads/image/footer-logo(new).png" alt="Malta Libraries Logo" />
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="http://www.maltalibraries.gov.mt/iguana/www.main.cls?v=f9a951aa-b49c-4b54-b644-70ffd820c20e">Disclaimer</a>
+      <span aria-hidden="true">│</span>
+      <a href="http://www.maltalibraries.gov.mt/iguana/www.main.cls?v=ff2fae7a-499d-4092-bb7d-424c2424b211">Privacy Policy</a>
+      <span aria-hidden="true">│</span>
+      <a href="http://www.maltalibraries.gov.mt/iguana/www.main.cls?v=e95a4e91-ba14-472c-b6fa-4740d6c488fb">Copyright</a>
+      <span aria-hidden="true">│</span>
+      <a href="http://www.maltalibraries.gov.mt/iguana/www.main.cls?v=507b6315-7173-4f7c-b9ca-18ba34071134">Accessibility</a>
+    </nav>
+  </div>
+  <hr />
+  <p class="footer-copy">Created by Infor Library Designs &copy; 2015</p>
+    </footer>
+  </div>
+
+  <!-- Floating Dark/Light Mode Button -->
+  <button id="themeToggle" aria-label="Toggle Dark Mode">🌓</button>
+
+  <script>
+   const libEvents = [
+      {
+        title: "Valletta Book Festival",
+        date: "July 20, 2025",
+        location: "National Library, Valletta",
+        image: "https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Event1.png"
+      },
+      {
+        title: "Literary Night",
+        date: "August 10, 2025",
+        location: "Gozo Public Library",
+        image: "https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Event1.png"
+      },
+      {
+        title: "Children's Reading Day",
+        date: "September 5, 2025",
+        location: "Central Public Library, Floriana",
+        image: "https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Event1.png"
+      },
+      {
+        title: "Book Illustration Workshop",
+        date: "October 12, 2025",
+        location: "Msida Local Library",
+        image: "https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Event1.png"
+      },
+      {
+        title: "Historical Manuscript Exhibit",
+        date: "November 18, 2025",
+        location: "University Library, Msida",
+        image: "https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Event1.png"
+      },
+      {
+        title: "Poetry & Coffee Evening",
+        date: "December 3, 2025",
+        location: "Rabat Community Library",
+        image: "https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Event1.png"
+      }
+    ];
+
+    const libTrack = document.getElementById("lib-carousel-track");
+    const libDotsContainer = document.getElementById("lib-dot-container");
+    let libCurrentIndex = 0;
+    let libAnimating = false;
+
+    libEvents.forEach((event, i) => {
+      const card = document.createElement("div");
+      card.classList.add("lib-card");
+      card.dataset.index = i;
+      card.innerHTML = `
+        <img src="${event.image}" alt="${event.title}">
+        <div class="lib-card-content">
+          <h3>${event.title}</h3>
+          <p>${event.date}<br>${event.location}</p>
+        </div>
+      `;
+      libTrack.appendChild(card);
+
+      const dot = document.createElement("div");
+      dot.classList.add("lib-dot");
+      dot.dataset.index = i;
+      libDotsContainer.appendChild(dot);
+    });
+
+    const libCards = document.querySelectorAll(".lib-card");
+    const libDots = document.querySelectorAll(".lib-dot");
+
+    function updateLibCarousel(newIndex) {
+      if (libAnimating) return;
+      libAnimating = true;
+      libCurrentIndex = (newIndex + libCards.length) % libCards.length;
+
+      libCards.forEach((card, i) => {
+        const offset = (i - libCurrentIndex + libCards.length) % libCards.length;
+        card.classList.remove("center", "left-1", "left-2", "right-1", "right-2", "hidden");
+
+        if (offset === 0) card.classList.add("center");
+        else if (offset === 1) card.classList.add("right-1");
+        else if (offset === 2) card.classList.add("right-2");
+        else if (offset === libCards.length - 1) card.classList.add("left-1");
+        else if (offset === libCards.length - 2) card.classList.add("left-2");
+        else card.classList.add("hidden");
+      });
+
+      libDots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === libCurrentIndex);
+      });
+
+      setTimeout(() => {
+        libAnimating = false;
+      }, 800);
+    }
+
+    setInterval(() => {
+      updateLibCarousel(libCurrentIndex + 1);
+    }, 5000);
+
+    document.querySelector(".lib-nav-arrow.left").addEventListener("click", () => updateLibCarousel(libCurrentIndex - 1));
+    document.querySelector(".lib-nav-arrow.right").addEventListener("click", () => updateLibCarousel(libCurrentIndex + 1));
+    libDots.forEach(dot => dot.addEventListener("click", () => updateLibCarousel(Number(dot.dataset.index))));
+    libCards.forEach(card => card.addEventListener("click", () => updateLibCarousel(Number(card.dataset.index))));
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowLeft") updateLibCarousel(libCurrentIndex - 1);
+      if (e.key === "ArrowRight") updateLibCarousel(libCurrentIndex + 1);
+    });
+
+    let libTouchStartX = 0;
+    document.addEventListener("touchstart", e => libTouchStartX = e.changedTouches[0].screenX);
+    document.addEventListener("touchend", e => {
+      const libTouchEndX = e.changedTouches[0].screenX;
+      if (libTouchStartX - libTouchEndX > 50) updateLibCarousel(libCurrentIndex + 1);
+      if (libTouchEndX - libTouchStartX > 50) updateLibCarousel(libCurrentIndex - 1);
+    });
+
+    updateLibCarousel(0);
+
+    function openNav() {
+      document.getElementById("mySidebar").style.width = "300px";
+      document.getElementById("main").style.marginLeft = "300px";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidebar").style.width = "0";
+      document.getElementById("main").style.marginLeft = "0";
+    }
+
+let prevScrollPos = window.pageYOffset;
+const header = document.getElementById("siteHeader");
+
+window.addEventListener("scroll", function () {
+  const currentScrollPos = window.pageYOffset;
+
+  // Only hide if user scrolled more than 50px down
+  if (prevScrollPos > currentScrollPos || currentScrollPos < 250) {
+    header.classList.remove("hidden");
+  } else {
+    header.classList.add("hidden");
+  }
+
+  prevScrollPos = currentScrollPos;
+});
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        closeNav();
+      }
+    });
+
+
+    const track = document.getElementById('carouselTrack');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const prevBtn = document.querySelector('.carousel-nav.prev');
+    const nextBtn = document.querySelector('.carousel-nav.next');
+    let currentIndex = 0;
+
+    function centerSlide(index) {
+      const slide = slides[index];
+      const trackRect = track.getBoundingClientRect();
+      const slideRect = slide.getBoundingClientRect();
+      const scrollLeft = track.scrollLeft + (slideRect.left - trackRect.left) - (track.clientWidth / 2 - slide.clientWidth / 2);
+      track.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    }
+
+    function moveCarousel(direction) {
+      currentIndex += direction;
+      if (currentIndex < 0) currentIndex = slides.length - 1;
+      if (currentIndex >= slides.length) currentIndex = 0;
+      centerSlide(currentIndex);
+    }
+
+    prevBtn.addEventListener('click', () => moveCarousel(-1));
+    nextBtn.addEventListener('click', () => moveCarousel(1));
+
+    let autoScroll = setInterval(() => moveCarousel(1), 3000);
+    const carousel = document.getElementById("carousel");
+
+    carousel.addEventListener("mouseenter", () => clearInterval(autoScroll));
+    carousel.addEventListener("mouseleave", () => {
+      autoScroll = setInterval(() => moveCarousel(1), 3000);
+    });
+    
+    document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') moveCarousel(-1);
+  if (e.key === 'ArrowRight') moveCarousel(1);
+});
+
+    window.addEventListener('load', () => centerSlide(currentIndex));
+
+    const trackNBO = document.getElementById('carouselNBOTrack');
+    const slidesNBO = document.querySelectorAll('.nbo-slide');
+    const prevBtnNBO = document.querySelector('.nbo-nav.prev');
+    const nextBtnNBO = document.querySelector('.nbo-nav.next');
+    let indexNBO = 0;
+
+    function centerSlideNBO(index) {
+      const slide = slidesNBO[index];
+      const trackRect = trackNBO.getBoundingClientRect();
+      const slideRect = slide.getBoundingClientRect();
+      const scrollLeft = trackNBO.scrollLeft + (slideRect.left - trackRect.left) - (trackNBO.clientWidth / 2 - slide.clientWidth / 2);
+      trackNBO.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+
+      slidesNBO.forEach((s, i) => s.classList.toggle('active', i === index));
+    }
+
+    function moveNBO(direction) {
+      indexNBO += direction;
+      if (indexNBO < 0) indexNBO = slidesNBO.length - 1;
+      if (indexNBO >= slidesNBO.length) indexNBO = 0;
+      centerSlideNBO(indexNBO);
+    }
+
+    prevBtnNBO.addEventListener('click', () => moveNBO(-1));
+    nextBtnNBO.addEventListener('click', () => moveNBO(1));
+
+    let autoScrollNBO = setInterval(() => moveNBO(1), 3000);
+    const containerNBO = document.getElementById("carouselNBO");
+
+    containerNBO.addEventListener("mouseenter", () => clearInterval(autoScrollNBO));
+    containerNBO.addEventListener("mouseleave", () => {
+      autoScrollNBO = setInterval(() => moveNBO(1), 3000);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') moveNBO(-1);
+      if (e.key === 'ArrowRight') moveNBO(1);
+    });
+
+    window.addEventListener('load', () => {
+      const slide = slidesNBO[indexNBO];
+      const trackRect = trackNBO.getBoundingClientRect();
+      const slideRect = slide.getBoundingClientRect();
+      const scrollLeft = trackNBO.scrollLeft + (slideRect.left - trackRect.left) - (trackNBO.clientWidth / 2 - slide.clientWidth / 2);
+      trackNBO.scrollTo({ left: scrollLeft, behavior: 'auto' });
+      slidesNBO[indexNBO].classList.add('active');
+    });
+    
+
+  </script><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script><script>
+    const libraries = [
+      { id: 'map1', coords: [35.8997, 14.5146] },
+      { id: 'map2', coords: [35.8880, 14.5049] },
+      { id: 'map3', coords: [36.0441, 14.2390] },
+      { id: 'map4', coords: [36.0448, 14.2393] },
+    ];
+
+    libraries.forEach(lib => {
+      const map = L.map(lib.id).setView(lib.coords, 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      L.marker(lib.coords).addTo(map);
+    });
+
+    function toggleHours(button) {
+      const hours = button.nextElementSibling;
+      hours.classList.toggle("hidden");
+      button.textContent = hours.classList.contains("hidden")
+        ? "📅 View Opening Hours"
+        : "📅 Hide Opening Hours";
+    }
+
+    </script>
+
+  <!-- Dark Mode Toggle Script -->
+  <script>
+    const toggleBtn = document.getElementById('themeToggle');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+  </script>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</body>
+</html>
