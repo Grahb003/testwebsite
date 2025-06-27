@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .chatbot-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .chatbot-toggle {
+      background-color: #CA4B2E; /* brand color background */
+      border: none;
+      padding: 10px; /* padding around logo */
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      box-shadow: 0 0 6px #CA4B2E;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .chatbot-toggle:hover {
+      box-shadow: 0 0 10px #CA4B2E;
+    }
+
+    .chatbot-toggle img {
+      width: 50px; /* smaller size */
+      height: 50px;
+      border-radius: 50%; /* softly rounded corners */
+      object-fit: contain;
+    }
+
+    .chatbot-box {
+      display: none;
+      flex-direction: column;
+      width: 320px;
+      height: 480px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      overflow: hidden;
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+
+    .chatbot-box.minimizing {
+      opacity: 0;
+    }
+
+    .chat-header {
+      background-color: #CA4B2E;
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .chat-content {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bot-message, .user-message {
+      display: flex;
+      align-items: flex-end;
+      margin: 10px 0;
+    }
+
+    .bot-message .message-bubble, .user-message .message-bubble {
+      padding: 10px;
+      border-radius: 6px;
+      max-width: 80%;
+      position: relative;
+    }
+
+    .bot-message .message-bubble {
+      background-color: #e0e0e0;
+      margin-left: 8px;
+      color: black;
+    }
+
+    .user-message {
+      justify-content: flex-end;
+    }
+
+    .user-message .message-bubble {
+      background-color: #CA4B2E;
+      color: white;
+      margin-right: 0;
+    }
+
+    .message-time {
+      display: block;
+      font-size: 0.7em;
+      color: #1B5061; /* changed timestamp color to white */
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+
+    .bot-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .typing-indicator {
+      font-style: italic;
+      font-size: 0.9em;
+      color: #888;
+      margin-left: 36px;
+    }
+
+    .question-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .question-buttons button {
+      padding: 8px;
+      background-color: #eeeeee;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 5px transparent;
+    }
+
+    .question-buttons button:hover:not(:disabled) {
+      background-color: #dddddd;
+      box-shadow: 0 0 8px #CA4B2E; /* subtle glow */
+    }
+
+    .question-buttons button:disabled {
+      background-color: #ccc;
+      cursor: default;
+      opacity: 0.6;
+      box-shadow: none;
+    }
+
+    .back-button {
+      margin-top: 10px;
+      align-self: center;
+      background-color: #CA4B2E;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 6px #CA4B2E;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #b13d22;
+      box-shadow: 0 0 10px #b13d22;
+    }
+
+    .end-chat-button {
+      margin-top: 6px;
+      align-self: center;
+      background-color: #1B5061;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 6px #444;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .end-chat-button:hover {
+      background-color: #222;
+      box-shadow: 0 0 10px #222;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chatbot-widget">
+    <button class="chatbot-toggle" onclick="toggleChat()">
+      <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/ChatBot.png" alt="Chatbot" />
+    </button>
+    <div class="chatbot-box" id="chatbotBox">
+      <div class="chat-header">
+        <strong>ChatBot Name</strong>
+        <button onclick="minimizeChat()">—</button>
+      </div>
+      <div class="chat-content" id="chatContent">
+        <!-- Messages and buttons appear here -->
+      </div>
+    </div>
+  </div>
+
+  <audio id="ping" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+
+  <script>
+    const qaPairs = {
+      "What are the opening hours of Malta public libraries?": "Most Malta public libraries are open from Monday to Friday, 8:00 AM to 6:00 PM, and on Saturdays from 8:00 AM to 12:30 PM. Some libraries may have different hours, so please check the specific library’s website or contact them directly.",
+      "Are the libraries free to use?": "Yes, access to the library and borrowing books is free of charge for all registered members.",
+      "How many books can I borrow at once?": "You can borrow up to 5 books at a time with a standard library card.",
+      "Can I renew borrowed books online?": "Yes, you can renew your borrowed items through the Malta Libraries online portal, provided they are not reserved by others.",
+      "Does the library offer eBooks or audiobooks? How can I access them?": "Yes, Malta Libraries provide access to eBooks and audiobooks through digital platforms such as OverDrive or Libby. You will need your library card details to log in.",
+      "What kind of events does the library host?": "Libraries host a range of events including author talks, book clubs, children’s storytime sessions, workshops, and cultural programs.",
+      "Are the libraries wheelchair accessible?": "Yes, all Malta public libraries are wheelchair accessible with ramps and lifts where needed."
+    };
+
+    const botImage = "https://www.maltalibraries.gov.mt/iguanatest/uploads/image/ChatBot.png";
+
+    function toggleChat() {
+      const box = document.getElementById("chatbotBox");
+      if (box.style.display === "flex") {
+        minimizeChat();
+      } else {
+        box.style.display = "flex";
+        box.classList.remove("minimizing");
+      }
+    }
+
+    function minimizeChat() {
+      const box = document.getElementById("chatbotBox");
+      box.classList.add("minimizing");
+      setTimeout(() => {
+        box.style.display = "none";
+        box.classList.remove("minimizing");
+      }, 400);
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function addUserMessage(text) {
+      const chatContent = document.getElementById("chatContent");
+      const wrapper = document.createElement("div");
+      wrapper.className = "user-message";
+
+      const bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+      bubble.textContent = text;
+
+      const time = document.createElement("span");
+      time.className = "message-time";
+      time.textContent = formatTime(new Date());
+
+      bubble.appendChild(time);
+      wrapper.appendChild(bubble);
+      chatContent.appendChild(wrapper);
+      scrollToBottom();
+    }
+
+    function addBotMessage(text) {
+      const chatContent = document.getElementById("chatContent");
+      const wrapper = document.createElement("div");
+      wrapper.className = "bot-message";
+
+      const avatar = document.createElement("img");
+      avatar.className = "bot-avatar";
+      avatar.src = botImage;
+      avatar.alt = "Bot";
+
+      const bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+      bubble.textContent = text;
+
+      const time = document.createElement("span");
+      time.className = "message-time";
+      time.textContent = formatTime(new Date());
+
+      bubble.appendChild(time);
+      wrapper.appendChild(avatar);
+      wrapper.appendChild(bubble);
+      chatContent.appendChild(wrapper);
+      playSound();
+      scrollToBottom();
+    }
+
+    function playSound() {
+      const audio = document.getElementById("ping");
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(err => console.warn("Audio blocked:", err));
+      }
+    }
+
+    // Smooth scroll to bottom
+    function scrollToBottom() {
+      const chatContent = document.getElementById("chatContent");
+      chatContent.scrollTo({ top: chatContent.scrollHeight, behavior: 'smooth' });
+    }
+
+    // Smooth scroll to any element inside chatContent
+    function scrollToElement(element) {
+      const chatContent = document.getElementById("chatContent");
+      const elBottom = element.offsetTop + element.offsetHeight;
+      const containerHeight = chatContent.clientHeight;
+      chatContent.scrollTo({ top: elBottom - containerHeight + 10, behavior: 'smooth' });
+    }
+
+    function handleQuestionClick(question, button) {
+      document.getElementById("questionButtons").style.display = "none";
+      addUserMessage(question);
+
+      const typing = document.createElement("div");
+      typing.className = "typing-indicator";
+      typing.textContent = "Bot is typing...";
+      document.getElementById("chatContent").appendChild(typing);
+      scrollToBottom();
+
+      setTimeout(() => {
+        typing.remove();
+        addBotMessage(qaPairs[question]);
+        scrollToBottom();
+        addBackAndEndButtons();
+        button.disabled = true;
+      }, 1200);
+    }
+
+    function addBackAndEndButtons() {
+      const chatContent = document.getElementById("chatContent");
+
+      // Back button
+      const backBtn = document.createElement("button");
+      backBtn.textContent = "🔙 Ask another question";
+      backBtn.className = "back-button";
+      backBtn.onclick = () => {
+        backBtn.remove();
+        endBtn.remove();
+        const questionButtons = document.getElementById("questionButtons");
+        questionButtons.style.display = "flex";
+        scrollToElement(questionButtons);
+      };
+      chatContent.appendChild(backBtn);
+
+      // End chat button
+      const endBtn = document.createElement("button");
+      endBtn.textContent = "❌ End chat";
+      endBtn.className = "end-chat-button";
+      endBtn.onclick = () => {
+        chatContent.innerHTML = "";
+        addBotMessage("Thank you for chatting with us! Have a great day.");
+        const questionButtons = document.getElementById("questionButtons");
+        if (questionButtons) questionButtons.style.display = "none";
+        setTimeout(() => {
+          minimizeChat();
+          resetChat();
+        }, 2000);
+      };
+      chatContent.appendChild(endBtn);
+
+      scrollToElement(backBtn);
+    }
+
+    function resetChat() {
+      const chatContent = document.getElementById("chatContent");
+      chatContent.innerHTML = "";
+      addBotMessage("Hi! How can I help you today?");
+      const container = document.createElement("div");
+      container.id = "questionButtons";
+      container.className = "question-buttons";
+
+      Object.keys(qaPairs).forEach(q => {
+        const btn = document.createElement("button");
+        btn.textContent = q;
+        btn.onclick = () => handleQuestionClick(q, btn);
+        container.appendChild(btn);
+      });
+
+      chatContent.appendChild(container);
+      scrollToElement(container);
+    }
+
+    window.onload = () => {
+      resetChat();
+    };
+  </script>
+
+</body>
+</html>
