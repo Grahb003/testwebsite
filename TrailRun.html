@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Malta Libraries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: auto;
+      overflow-x: hidden;
+      font-family: "Lato", sans-serif;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      height: 100vh;
+      background-color: #CA4B2E;
+      position: fixed;
+      top: 0;
+      left: -300px;
+      transition: left 0.4s ease;
+      z-index: 2001;
+      padding-top: 60px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 24px;
+      font-size: 18px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .sidebar a:hover {
+      background-color: #b24327;
+    }
+
+    .sidebar hr {
+      margin: 10px 0;
+      border: none;
+      height: 2px;
+      background-color: white;
+    }
+
+    .sidebar .closebtn {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 30px;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: fixed;
+      display: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: min(30vh, 220px);
+      background-color: #CA4B2E;
+      color: white;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, margin-left 0.4s ease;
+      padding-bottom: 5px;
+    }
+
+    .header.hidden {
+      transform: translateY(-100%);
+    }
+
+    .header.shifted {
+      margin-left: 300px;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      padding: 18px 32px;
+      flex-grow: 1;
+      justify-content: center;
+      position: relative;
+      gap: 16px;
+      flex-wrap: nowrap;
+    }
+
+    .openbtn {
+      position: absolute;
+      left: 32px;
+      font-size: 26px;
+      padding: 14px 22px;
+      background-color: #CA4B2E;
+      color: white;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .openbtn:hover {
+      background-color: #b24327;
+    }
+
+    .logo img {
+      height: 90px;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .account {
+      position: absolute;
+      right: 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .account a {
+      display: flex;
+      align-items: center;
+      color: white;
+      text-decoration: none;
+    }
+
+    .account a:hover {
+      color: #b24327;
+    }
+
+    .account img {
+      height: 32px;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    .account span {
+      color: white;
+      padding-left: 8px;
+    }
+
+    .header-hr {
+      width: 100%;
+      height: 4px;
+      background-color: white;
+      border: none;
+      margin: 0;
+    }
+
+    /* Page Wrapper */
+    .page-wrapper {
+      transition: margin-left 0.4s ease;
+      margin-left: 0;
+      padding-top: min(30vh, 220px);
+    }
+
+    .page-wrapper.shifted {
+      margin-left: 300px;
+    }
+
+    .welcome-banner {
+      margin: 0;
+      padding: 0;
+    }
+
+    .welcome-image {
+      width: 100vw;
+      height: auto;
+      display: block;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #CA4B2E;
+      color: white;
+      padding: 20px 15px;
+      font-family: 'Trebuchet MS', Helvetica, sans-serif;
+      font-size: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .footer hr {
+      border: none;
+      height: 2px;
+      background: white;
+      margin: 10px 0;
+    }
+
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    .footer-logo img {
+      width: 72px;
+      height: 32px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    .footer-links a:hover {
+      border-bottom: 1px solid white;
+    }
+
+    .footer-copy {
+      text-align: center;
+      font-size: 10px;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      .footer-container {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .footer-links {
+        justify-content: center;
+      }
+
+      .header {
+        height: 120px;
+      }
+
+      .page-wrapper {
+        padding-top: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="mySidebar">
+  <span class="closebtn" onclick="closeNav()">×</span>
+  <hr/><a href="#">Home</a>
+  <hr/><a href="#">Malta Libraries</a>
+  <hr/><a href="#">Public Libraries</a>
+  <hr/><a href="#">National Library</a>
+  <hr/><a href="#">Online Catalogues</a>
+  <hr/><a href="#">Services</a>
+  <hr/><a href="#">Contact Us</a>
+  <hr/><a href="#">Register</a>
+  <hr/>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeNav()"></div>
+
+<!-- Page Content -->
+<div class="page-wrapper" id="mainContent">
+
+  <!-- Header -->
+  <div class="header" id="siteHeader">
+    <div class="header-content">
+      <button class="openbtn" onclick="openNav()">☰ Menu</button>
+      <div class="logo">
+        <a href="#"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/6727white.png" alt="Malta Libraries Logo" /></a>
+      </div>
+      <div class="account">
+        <a href="#"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/ProfileIcon.png" alt="User Icon" /><span>My Library Account</span></a>
+      </div>
+    </div>
+    <hr class="header-hr" />
+  </div>
+
+  <!-- Welcome Banners -->
+  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part1.jpg" class="welcome-image" alt="Part 1" /></section>
+  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part2.jpg" class="welcome-image" alt="Part 2" /></section>
+  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part3.jpg" class="welcome-image" alt="Part 3" /></section>
+  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part4.jpg" class="welcome-image" alt="Part 4" /></section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <hr />
+    <div class="footer-container">
+      <div class="footer-logo">
+        <img src="https://www.maltalibraries.gov.mt//iguana/uploads/image/footer-logo(new).png" alt="Malta Libraries Logo" />
+      </div>
+      <nav class="footer-links">
+        <a href="#">Disclaimer</a><span>│</span>
+        <a href="#">Privacy Policy</a><span>│</span>
+        <a href="#">Copyright</a><span>│</span>
+        <a href="#">Accessibility</a>
+      </nav>
+    </div>
+    <hr />
+    <p class="footer-copy">Created by Infor Library Designs © 2015</p>
+  </footer>
+</div>
+
+<!-- JavaScript -->
+<script>
+  function openNav() {
+    document.getElementById("mySidebar").style.left = "0";
+    document.getElementById("mainContent").classList.add("shifted");
+    document.getElementById("siteHeader").classList.add("shifted");
+    document.getElementById("overlay").classList.add("active");
+  }
+
+  function closeNav() {
+    document.getElementById("mySidebar").style.left = "-300px";
+    document.getElementById("mainContent").classList.remove("shifted");
+    document.getElementById("siteHeader").classList.remove("shifted");
+    document.getElementById("overlay").classList.remove("active");
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const header = document.getElementById("siteHeader");
+    let lastScrollTop = 0;
+
+    window.addEventListener("scroll", function () {
+      const currentScroll = window.scrollY || document.documentElement.scrollTop;
+
+      if (currentScroll > lastScrollTop && currentScroll > header.offsetHeight) {
+        header.classList.add("hidden");
+      } else {
+        header.classList.remove("hidden");
+      }
+
+      lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    });
+  });
+</script>
+
+</body>
+</html>
