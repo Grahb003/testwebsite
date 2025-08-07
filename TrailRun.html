@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Malta Libraries</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet"/>
   <style>
     html, body {
       margin: 0;
@@ -15,7 +15,6 @@
       font-family: "Lato", sans-serif;
     }
 
-    /* Sidebar */
     .sidebar {
       width: 300px;
       height: 100vh;
@@ -71,7 +70,6 @@
       display: block;
     }
 
-    /* Header */
     .header {
       position: fixed;
       top: 0;
@@ -169,7 +167,6 @@
       margin: 0;
     }
 
-    /* Page Wrapper */
     .page-wrapper {
       transition: margin-left 0.4s ease;
       margin-left: 0;
@@ -180,18 +177,7 @@
       margin-left: 300px;
     }
 
-    .welcome-banner {
-      margin: 0;
-      padding: 0;
-    }
-
-    .welcome-image {
-      width: 100vw;
-      height: auto;
-      display: block;
-    }
-
-    /* Footer */
+    
     .footer {
       background-color: #CA4B2E;
       color: white;
@@ -248,7 +234,7 @@
       opacity: 0.8;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .footer-container {
         flex-direction: column;
         gap: 15px;
@@ -260,13 +246,342 @@
       }
 
       .header {
-        height: 120px;
+        height: auto;
+      }
+
+      .header-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .logo img {
+        height: 60px;
+      }
+
+      .account {
+        position: static;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      .openbtn {
+        position: static;
+        font-size: 20px;
+        padding: 8px 16px;
       }
 
       .page-wrapper {
-        padding-top: 120px;
+        padding-top: 140px;
+      }
+
+      .welcome-overlay {
+        top: 60%;
+        left: 5%;
+        transform: translateY(-50%);
+        text-align: center;
+      }
+
+      .welcome-overlay h1 {
+        font-size: clamp(20px, 7vw, 40px);
+        line-height: 1.2;
+      }
+
+      .welcome-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 0 10px;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        padding: 12px;
       }
     }
+
+    .image-wrapper {
+      position: relative;
+      display: block;
+      line-height: 0;
+      font-size: 0;
+    }
+    .main-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0;
+    }
+
+    .button-overlay {
+      position: absolute;
+      display: block;
+      z-index: 2;
+      cursor: pointer;
+      /* background:rgba(255, 0, 0, 0.3);  Red for testing */
+      border-radius: 9999px; /* Perfect pill shape */
+    }
+
+    /* Fine-tuned "Join the Library" button overlay */
+    .join {
+      top: 65%;
+      left: 8%;
+      width: 25.5%;
+      height: 10%;
+    }
+
+    /* Fine-tuned "Search the Catalogues" button overlay */
+    .search {
+      top: 64.5%;
+      left: 34.5%;
+      width: 25%;
+      height: 10%;
+    }
+
+    /* === Overlays === */
+    .btn-1 {
+      top: 16%;
+      left: 5%;
+      width: 36%;
+      height: 6.2%;
+    }
+
+    .btn-2 {
+      top: 27%;
+      left: 17.5%;
+      width: 38.5%;
+      height: 6.5%;
+    }
+
+    .btn-3 {
+      top: 38%;
+      left: 5%;
+      width: 36%;
+      height: 6.2%;
+    }
+
+    .btn-4 {
+      top: 51%;
+      left: 17.5%;
+      width: 38.5%;
+      height: 6.5%;
+    }
+
+    .btn-5 {
+      top: 62%;
+      left: 6.5%;
+      width: 35.5%;
+      height: 6.2%;
+    }
+
+    .btn-6 {
+      top: 75%;
+      left: 19%;
+      width: 38.5%;
+      height: 6.2%;
+    }
+
+    .btn-7 {
+      top: 88%;
+      left: 6.5%;
+      width: 35.5%;
+      height: 6.2%;
+    }
+
+    .carousel-container::before,
+.carousel-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 5;
+  pointer-events: none;
+}
+.carousel-container::before {
+  left: 0;
+  background: linear-gradient(to right, #e36010, transparent);
+}
+.carousel-container::after {
+  right: 0;
+  background: linear-gradient(to left, #e36010, transparent);
+}
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #e36010;
+      margin: auto;
+      height: 150%;
+    }
+
+    .carousel-track {
+      display: flex;
+      overflow-x: scroll;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding: 60px 0;
+    }
+
+    .carousel-slide {
+      flex: 0 0 auto;
+      width: 300px;
+      margin: 0 15px;
+      scroll-snap-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 390px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-slide.active img {
+      transform: scale(1.3);
+      z-index: 2;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: #ffffff;
+      font-size: 2rem;
+      padding: 10px 15px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .carousel-nav.prev {
+      left: 10px;
+    }
+
+    .carousel-nav.next {
+      right: 10px;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-track {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Latest News & Events Section Styles */
+.latest-news-wrapper {
+  margin: 0 auto;
+  padding: 20px 20px 20px;
+  box-sizing: border-box;
+  background-color: #AED8C0;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.news-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+}
+
+.main-news {
+  flex: 1 1 50%;
+  padding: 30px;
+  border-radius: 30px;
+  background-color: rgba(55, 115, 99, 0.95);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.main-news h2 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.main-news .date {
+  font-size: 1.5em;
+  color: #d0eae2;
+  margin-bottom: 20px;
+}
+
+.main-news p {
+  font-size: 1.7em;
+  line-height: 1.6;
+}
+
+.main-news a {
+  display: inline-block;
+  margin-top: 15px;
+  color: #d0eae2;
+  text-decoration: underline;
+}
+
+.side-news {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.side-item {
+  background-color: rgba(55, 115, 99, 0.95);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  backdrop-filter: blur(5px);
+}
+
+.side-item h3 {
+  font-size: 1.5em;
+  margin-top: 0;
+}
+
+.side-item .date {
+  font-size: 1em;
+  color: #d0eae2;
+  margin-bottom: 10px;
+}
+
+.side-item p {
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+.side-item a {
+  color: #d0eae2;
+  font-size: 0.95em;
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .latest-news-wrapper {
+    padding: 250px 20px 30px;
+  }
+
+  .news-content {
+    flex-direction: column;
+  }
+
+  .main-news, .side-news {
+    flex: 1 1 100%;
+  }
+}
+
+
   </style>
 </head>
 <body>
@@ -288,10 +603,8 @@
 <!-- Overlay -->
 <div class="overlay" id="overlay" onclick="closeNav()"></div>
 
-<!-- Page Content -->
+<!-- Main Content -->
 <div class="page-wrapper" id="mainContent">
-
-  <!-- Header -->
   <div class="header" id="siteHeader">
     <div class="header-content">
       <button class="openbtn" onclick="openNav()">☰ Menu</button>
@@ -305,13 +618,102 @@
     <hr class="header-hr" />
   </div>
 
-  <!-- Welcome Banners -->
-  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part1.jpg" class="welcome-image" alt="Part 1" /></section>
-  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part2.jpg" class="welcome-image" alt="Part 2" /></section>
-  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part3.jpg" class="welcome-image" alt="Part 3" /></section>
-  <section class="welcome-banner"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part4.jpg" class="welcome-image" alt="Part 4" /></section>
+  <div class="image-wrapper">
+    <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part1.jpg" alt="Library Welcome" class="main-image" />
 
-  <!-- Footer -->
+    <!-- Accurate clickable overlays -->
+    <a href="https://yourwebsite.com/join" class="button-overlay join" title="Join the Library" aria-label="Join the Library"></a>
+    <a href="https://yourwebsite.com/catalogue" class="button-overlay search" title="Search the Catalogues" aria-label="Search the Catalogues"></a>
+  </div>
+
+  <!-- Spotlight top img -->
+  <div class="image-wrapper">
+    <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/SpotlightTop.jpg" alt="Library Welcome" class="main-image" />
+  </div>
+
+
+  <!-- Carousel HTML Code -->
+  <div class="carousel-container" id="carousel">
+    <button class="carousel-nav prev">&#10094;</button>
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 1"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 2"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 3"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 4"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 5"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 6"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 7"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 8"></div>
+      <div class="carousel-slide"><img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/BookCover.jpg" alt="Image 9"></div>
+    </div>
+    <button class="carousel-nav next">&#10095;</button>
+  </div>
+
+
+  <!-- Spotlight bottom img -->
+  <div class="image-wrapper">
+    <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/SpotlightBottom.jpg" alt="Library Welcome" class="main-image" />
+  </div>
+
+  <!-- Events Top img -->
+  <div class="image-wrapper">
+    <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/EventsTop.jpg" alt="Library Welcome" class="main-image" />
+  </div>
+
+  <!-- Events HTML Code -->
+  <div class="latest-news-wrapper">
+  <div class="news-content">
+    <div class="main-news">
+      <h2>Refurbished Sliema Library Reopens</h2>
+      <p class="date">18 July 2025</p>
+      <p>
+        After months of renovation, the Sliema Regional Library has reopened with expanded reading areas, improved lighting, and new children’s spaces.
+      </p>
+      <a href="#">[Read More]</a>
+    </div>
+
+    <div class="side-news">
+      <div class="side-item">
+        <h3>Read Under the Stars – Outdoor Storytelling Night</h3>
+        <p class="date">26 July 2025</p>
+        <p>Families gathered in Mellieħa for a magical evening of storytelling under the summer sky, featuring local authors, puppetry, and glow-in-the-dark bookmarks.</p>
+      </div>
+      <div class="side-item">
+        <h3>Summer Reading Challenge Launches</h3>
+        <p class="date">15 July 2025</p>
+        <p>Children across Malta are invited to take part in this year’s Summer Reading Challenge. Prizes await the most enthusiastic readers!</p>
+        <a href="#">[Read More]</a>
+      </div>
+      <div class="side-item">
+        <h3>New Online Catalogue Now Live</h3>
+        <p class="date">10 July 2025</p>
+        <p>Searching for your next book just got easier. Our upgraded catalogue system offers faster results and clearer filters.</p>
+        <a href="#">[Explore the Catalogue]</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Events Bottom img -->
+  <div class="image-wrapper">
+    <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/EventsBottom.jpg" alt="Library Welcome" class="main-image" />
+  </div>
+
+  <div class="image-wrapper">
+    <img src="https://www.maltalibraries.gov.mt/iguanatest/uploads/image/Part4.jpg" alt="Explore Your Library" class="main-image" />
+
+    <!-- Clickable Overlays -->
+    <a href="/services" class="button-overlay btn-1" title="Our Services"></a>
+    <a href="/digital-resources" class="button-overlay btn-2" title="Access Digital Resources"></a>
+    <a href="/programs-events" class="button-overlay btn-3" title="Programs & Events"></a>
+    <a href="/libraries" class="button-overlay btn-4" title="All Our Libraries"></a>
+    <a href="/publications" class="button-overlay btn-5" title="Our Publications"></a>
+    <a href="/about" class="button-overlay btn-6" title="Learn about Us"></a>
+    <a href="/contact" class="button-overlay btn-7" title="Contact Us"></a>
+  </div>
+
+  
   <footer class="footer">
     <hr />
     <div class="footer-container">
@@ -330,8 +732,50 @@
   </footer>
 </div>
 
-<!-- JavaScript -->
 <script>
+
+  const track = document.getElementById('carouselTrack');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const prevBtn = document.querySelector('.carousel-nav.prev');
+    const nextBtn = document.querySelector('.carousel-nav.next');
+    
+    let currentIndex = 0;
+
+    function centerSlide(index) {
+      const slide = slides[index];
+      const trackRect = track.getBoundingClientRect();
+      const slideRect = slide.getBoundingClientRect();
+      const scrollLeft = track.scrollLeft + (slideRect.left - trackRect.left) - (track.clientWidth / 2 - slide.clientWidth / 2);
+      track.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    }
+
+    function moveCarousel(direction) {
+      currentIndex += direction;
+      if (currentIndex < 0) currentIndex = slides.length - 1;
+      if (currentIndex >= slides.length) currentIndex = 0;
+      centerSlide(currentIndex);
+    }
+
+    prevBtn.addEventListener('click', () => moveCarousel(-1));
+    nextBtn.addEventListener('click', () => moveCarousel(1));
+
+    let autoScroll = setInterval(() => moveCarousel(1), 3000);
+    const carousel = document.getElementById("carousel");
+
+    carousel.addEventListener("mouseenter", () => clearInterval(autoScroll));
+    carousel.addEventListener("mouseleave", () => {
+      autoScroll = setInterval(() => moveCarousel(1), 3000);
+    });
+    
+    document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') moveCarousel(-1);
+  if (e.key === 'ArrowRight') moveCarousel(1);
+});
+
+    window.addEventListener('load', () => centerSlide(currentIndex));
+
   function openNav() {
     document.getElementById("mySidebar").style.left = "0";
     document.getElementById("mainContent").classList.add("shifted");
@@ -352,13 +796,11 @@
 
     window.addEventListener("scroll", function () {
       const currentScroll = window.scrollY || document.documentElement.scrollTop;
-
       if (currentScroll > lastScrollTop && currentScroll > header.offsetHeight) {
         header.classList.add("hidden");
       } else {
         header.classList.remove("hidden");
       }
-
       lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
     });
   });
